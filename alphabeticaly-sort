@@ -1,0 +1,1 @@
+  {% assign articles = blog.articles | sort_natural: "title" %}
