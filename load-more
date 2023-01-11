@@ -1,0 +1,32 @@
+<div class="lodmore-btn"><a href="#" id="loadMore">LOAD MORE</a></div>
+<style>
+
+.content {
+
+  display: none;
+}
+
+ .noContent {
+  color: #000 !important;
+  background-color: transparent !important;
+  pointer-events: none;
+  }</style>
+
+ 
+
+    <script>
+      
+      $(document).ready(function(){
+  $(".content").slice(0, 3).show();
+  $("#loadMore").on("click", function(e){
+    e.preventDefault();
+    $(".content:hidden").slice(0, 3).slideDown();
+    if($(".content:hidden").length == 0) {
+      $("#loadMore").text("No Content").addClass("noContent");
+    }
+  });
+  
+})</script>
+
+
+     
