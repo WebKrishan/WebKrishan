@@ -1,0 +1,109 @@
+
+      <div class="left-sidebar">
+      <h2 class="category_title_Sel">{{ section.settings.titlee }}</h2>
+  <div class="col_navi">
+<ul class="accordion-custom-side">
+{% for link in linklists.categories.links %}
+<li {% if link.links != blank %} class="active" {% endif %} {% if link.active %}class="active-custom {% if link.child_active %}
+  child-active{% endif %}"{% endif %}>
+  <a class="toggles new-sub" {% unless link.url == '#' %}href="{{ link.url }}" {% endunless %}>{{ link.title }}</a>
+{% if link.links != blank %}
+  <ul  class="inner main-head">
+    {% for child_link in link.links %}  
+    <li
+{% if child_link.active %} class="active-custom 
+{% if child_link.child_active %}child-active{% endif %}"{% endif %}>
+<a class="toggles in-menu {% if child_link.links != blank %} link-dropdown active{% endif %}"{% unless child_link.url == '#' %}href="{{ child_link.url }}" {% endunless %}">{{ child_link.title }}</a>
+    {% if child_link.links != blank %}
+     <ul class="inner">
+      {% for grandchild_link in child_link.links %}  
+        <li {% if grandchild_link.active %}class="active-custom {% if grandchild_link.child_active %}child-active{% endif %}"{% endif %}><a class="toggles custom-grand" href= "{{ grandchild_link.url }}">{{ grandchild_link.title }}</a></li>
+      {% endfor %}
+      </ul>
+    {% endif %}   
+    </li>
+    {% endfor %}
+  </ul> 
+{% endif %} 
+</li>
+{% endfor %}
+</ul>
+  
+  </div>
+</div>
+  </div>
+ <script>
+$(document).ready(function(){
+ 
+if ($(window).width() < 767) {
+  $('.col_navi').css('display', 'none');
+  $(".category_title_Sel").click(function(){
+  $(".col_navi").slideToggle();
+});
+  	$('.toggles').click(function(e) {
+    });
+
+       $(this).parent().find('.link-dropdown').toggleClass('activein');
+
+	$('.toggles').click(function(e) {
+  	//e.preventDefault();
+  
+    var $this = $(this);
+  
+    if ($this.next().hasClass('show')) {
+        $this.next().removeClass('show');
+        $this.next().slideUp(350);
+        $this.parent().find('.new-sub').toggleClass('active');
+        $this.parent().find('.link-dropdown').toggleClass('activein');
+
+
+    } else {
+        $this.parent().parent().find('a .new-sub').removeClass('show');
+        $this.parent().parent().find('a .new-sub').slideUp(350);
+        $this.parent().find('.new-sub').toggleClass('active');
+        $this.parent().find('.link-dropdown').toggleClass('activein');
+
+        $this.next().toggleClass('show');
+        $this.next().slideToggle(350);
+    }
+});
+}
+else {
+
+ 	$('.toggles').click(function(e) {
+    });
+
+       $(this).parent().find('.link-dropdown').toggleClass('activein');
+
+	$('.toggles').click(function(e) {
+  	//e.preventDefault();
+  
+    var $this = $(this);
+  
+    if ($this.next().hasClass('show')) {
+        $this.next().removeClass('show');
+        $this.next().slideUp(350);
+        $this.parent().find('.new-sub').toggleClass('active');
+        $this.parent().find('.link-dropdown').toggleClass('activein');
+
+
+    } else {
+        $this.parent().parent().find('a .new-sub').removeClass('show');
+        $this.parent().parent().find('a .new-sub').slideUp(350);
+        $this.parent().find('.new-sub').toggleClass('active');
+        $this.parent().find('.link-dropdown').toggleClass('activein');
+
+        $this.next().toggleClass('show');
+        $this.next().slideToggle(350);
+    }
+});
+    }
+});
+</script>
+    <style>
+
+
+  .inner {
+    display: none;
+}
+</style>
