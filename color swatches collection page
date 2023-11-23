@@ -1,0 +1,105 @@
+
+//html for color swatches 
+<div class="color-swatches">
+  {% assign unique_colors = '' %}
+  {% for option in card_product.options %}
+    {% if option == 'Color' %}
+      {% for variant in card_product.variants %}
+        {% assign variant_color = variant.option1 %}
+        {% unless unique_colors contains variant_color %}
+          {% assign unique_colors = unique_colors | append: variant_color | append: ',' %}
+          {% assign variant_handle = variant_color | handleize %}
+          {% assign asset_name = variant_handle | append: '.png' %}
+          <div class="swatch selected" data-variant-id="{{ variant.id }}" data-variant-title="{{ variant.title }}"
+            style="background-image: url({{ asset_name | asset_url }});width:50px; height:50px; background-position:center;display:block">
+          </div>
+        {% endunless %}
+      {% endfor %}
+      {% endif %}
+  {% endfor %}
+</div>
+//js for color and add to cart
+$(document).ready(function () {
+  
+  let prevDiv;
+$(".swatch").click(function(){
+  $(prevDiv).removeClass('border');  
+  $(this).addClass('border');
+  prevDiv = $(this);
+});
+        let formObj = {
+            quantity: 1,
+            id: null
+        };
+
+        $(document).on('click', '.swatch', function () {
+            let variantId = $(this).attr("data-variant-id");
+            let variantTitle = $(this).attr("data-variant-title");
+
+            formObj.id = variantId;
+            // alert('Selected variant: ' + variantTitle);
+        });
+
+        $(document).on('click', '.addbtn', function () {
+            if (!formObj.id) {
+                alert('Please select a color variant');
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/cart/add.js",
+                cache: false,
+                data: formObj,
+                dataType: "json",
+                success: function (data) {
+                    updateCartUI();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log('Error adding to cart:', thrownError);
+                }
+            });
+        });
+
+        function updateCartUI() {
+            setTimeout(function () {
+                $.getJSON("/cart.json").then((cart) => {
+                    fetch(routes.cart_url + "?view=item")
+                        .then((response) => response.text())
+                        .then((text) => {
+                            const sectionInnerHTML = new DOMParser().parseFromString(
+                                text,
+                                "text/html"
+                            );
+                            const cartFormInnerHTML =
+                                sectionInnerHTML.getElementById("CartDrawer").innerHTML;
+                            const totalPrice = sectionInnerHTML.querySelector(
+                                "#CartDrawer .totals__subtotal-value"
+                            ).innerHTML;
+                            $("#CartDrawer").html(cartFormInnerHTML);
+                            $("cart-drawer").removeClass("is-empty");
+                            $("cart-drawer-items").removeClass("is-empty");
+                            if ($("#cart-icon-bubble .cart-count-bubble").length === 0) {
+                                const cartNumber = document.createElement("div");
+                                cartNumber.className = "cart-count-bubble";
+                                cartNumber.innerHTML = `
+                                    <span aria-hidden="true">${cart.item_count}</span>
+                                    <span class="visually-hidden">${cart.item_count} items</span>
+                                `;
+                                $("#cart-icon-bubble").append(cartNumber);
+                            } else {
+                                $('.cart-count-bubble span[aria-hidden="true"]').each(
+                                    (_, count) => $(count).text(cart.item_count)
+                                );
+                            }
+                            $("#cart-icon-bubble")[0].click();
+
+                            $("#CartDrawer-Overlay").on("click", () => {
+                                $("cart-drawer").removeClass("active");
+                                $("body").removeClass("overflow-hidden");
+                            });
+                        });
+                });
+            }, 250);
+        }
+    });
