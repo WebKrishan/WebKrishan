@@ -1,0 +1,18 @@
+$(document).on("click",".add-to-cart",function() {
+      jsonObj = [];
+   $('input[name="product_idd"]:checked').each(function() {
+      var product_var = $(this).attr("product_id");
+     item= {}    
+      item['id'] = parseInt(product_var);
+      jsonObj.push(item);
+    });
+    $.ajax({
+      type: 'POST',
+      url: '/cart/add.js',
+      data: {items: jsonObj          },
+      dataType: 'json',
+      async: false,
+      success: function (data) {location.href = '/cart';},
+      error: function (jqXHR, textStatus, errorThrown) { console.log("error"); }
+    });
+	  });
