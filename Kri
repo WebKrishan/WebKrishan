@@ -1,0 +1,19 @@
+$(document).on("click","#ButtonAddToCart" ,function(){
+var button = $(this)
+
+var get_id_this = $(this).attr('value');
+console.log(get_id_this);
+$.ajax({
+type: 'POST',
+url: '/cart/add.js',
+data: {
+quantity:1,
+id: get_id_this
+},
+dataType: 'json',
+success: function() {
+setTimeout(function(){
+    button.text('Added!');
+}, 2000);
+}
+});
