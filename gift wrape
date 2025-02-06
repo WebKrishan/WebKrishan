@@ -1,0 +1,39 @@
+<div class="custom_wraper">
+   <input type="checkbox" id="giftwrape_custom" name="Gift Wrape" value="gift">
+   <label for="Gift-Wrape">Gift Wrape</label><br>
+  <!-- <button class="cs_button">add to cart</button> -->
+</div>
+
+<script>
+$(document).ready(function() {
+  $("#giftwrape_custom").change(function() {
+    if ($(this).is(":checked")) {
+      setTimeout(function() {
+        $(document).on("click", ".my_btn_new", function() {
+          var get_id_this = 43583742738479; 
+          alert(get_id_this);
+
+          $.ajax({
+            type: 'POST',
+            url: '/cart/add.js', 
+            data: {
+              quantity: 1,
+              id: get_id_this
+            },
+            dataType: 'json',
+            success: function(response) {
+              alert('Product added to cart');
+            },
+            error: function(xhr, status, error) {
+              console.error("Error adding to cart:");
+              alert('Error adding product to cart.');
+            }
+          });
+        });
+      }, 100); 
+    } else {
+      alert('Gift wrap option not selected.');
+    }
+  });
+});
+</script>
